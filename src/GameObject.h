@@ -35,7 +35,6 @@ public:
 
     void setRect(SDL_Rect *rect) { m_dimension = rect; }
     void setRect(double x, double y) { m_dimension->x = x; m_dimension->y = y; }
-    //void setRect(int x, int y, int width, int height) { setRect(x, y); m_dimension->w = width; m_dimension->h = height; }
     void setType(Type m_type) { type = m_type; }
     void setMove(Move m_move) { move = m_move; }
     void setVelocity(double m_velocity) { velocity = m_velocity; }

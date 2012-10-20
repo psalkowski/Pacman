@@ -34,7 +34,7 @@ void Player::initAnimation() {
 }
 
 void Player::updateAnimation(Move move) {
-    m_animation.x = move * 33;
+    m_animation.x = move * m_width;
 }
 
 void Player::goRight(double diff) {

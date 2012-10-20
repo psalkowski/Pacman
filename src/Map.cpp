@@ -78,7 +78,33 @@ void Map::convertFileToMap(string source) {
 }
 
 void Map::update(double diff) {
-    getPlayer()->update(diff);
+    Player *player = getPlayer();
+
+    for(unsigned i = 0; i < m_map.size(); i++) {
+        GameObject *gameObject = m_map.at(i);
+        if(gameObject->getType() == WALL) {
+            if(!canMove(player, gameObject)) {
+                switch(player->getMove()) {
+                    case LEFT:
+                        player->setRect(player->getRect()->x + 2, player->getRect()->y);
+                        break;
+                    case RIGHT:
+                        player->setRect(player->getRect()->x - 2, player->getRect()->y);
+                        break;
+                    case DOWN:
+                        player->setRect(player->getRect()->x, player->getRect()->y - 2);
+                        break;
+                    case UP:
+                        player->setRect(player->getRect()->x, player->getRect()->y + 2);
+                        break;
+                }
+                player->setMove(STAND);
+            }
+                
+            
+        }
+    } 
+    player->update(diff);
 }
 
 void Map::draw() {
@@ -98,4 +124,35 @@ void Map::draw() {
         }
     }
     SDL_BlitSurface(m_player, getPlayer()->getAnimationRect(), m_screen, getPlayer()->getRect());
+}
+
+bool Map::canMove(Player *player, GameObject *object) {
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    leftA = player->getRect()->x;
+    rightA = player->getRect()->x + player->getRect()->w;
+    topA = player->getRect()->y;
+    bottomA = player->getRect()->y + player->getRect()->h;
+
+    leftB = object->getRect()->x;
+    rightB = object->getRect()->x + object->getRect()->w;
+    topB = object->getRect()->y;
+    bottomB = object->getRect()->y + object->getRect()->h;
+
+    if(bottomA <= topB+5)
+        return true;
+    
+    if(topA >= bottomB-5)
+        return true;
+    
+    if(rightA <= leftB+5)
+        return true;
+    
+    if(leftA >= rightB-5)
+        return true;
+
+    return false;
 }
