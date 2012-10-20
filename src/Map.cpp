@@ -10,14 +10,14 @@ Map::Map() {
 
 Map::Map(SDL_Surface *screen) {
     setScreenSurface(screen);
-    m_wall = m_diamond = NULL;
+    m_player = m_wall = m_diamond = NULL;
     initMap();
 }
 
 Map::~Map() {
     SDL_FreeSurface(m_diamond);
     SDL_FreeSurface(m_wall);
-    //SDL_FreeSurface(m_pacman);
+    SDL_FreeSurface(m_player);
 }
 
 void Map::setScreenSurface(SDL_Surface *screen) {
@@ -37,13 +37,15 @@ GameObject* Map::getGameObject(int index) {
 void Map::initMap() {
     m_diamond = SDL_LoadBMP("images/diamond.bmp");
     m_wall = SDL_LoadBMP("images/block.bmp");
+    m_player = SDL_LoadBMP("images/pacman.bmp");
 
-    if(m_diamond == NULL || m_wall == NULL) {
-        cout << "error! " << endl;
+    if(m_player == NULL || m_diamond == NULL || m_wall == NULL) {
+        cout << "Z³a œcie¿ka zdjêæ. Poprawna to /images/ " << endl;
     }
 
     int colorkey = SDL_MapRGB(m_screen->format, 255, 0, 255);
     SDL_SetColorKey(m_diamond, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
+    SDL_SetColorKey(m_player, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
 }
 
 // funkcja nie jest bezpieczna, nale¿y j¹ przerobiæ
@@ -58,20 +60,13 @@ void Map::convertFileToMap(string source) {
         while(!file.eof()) {
             getline(file, line);
             for(unsigned i = 0; i < line.length(); i++) {
-                GameObject *gameObject = new GameObject(col*30, row*30);
-
-                switch(line.at(i)) {
-                    case '0':
-                        gameObject->setField(WALL);
-                        break;
-                    case '1':
-                        gameObject->setField(DIAMOND);
-                        break;
-                    default:
-                        break;
+                if(line.at(i) == '0')
+                    addGameObject(new Wall(col*30, row*30));
+                else if(line.at(i) == '1')
+                    addGameObject(new Diamond(col*30, row*30));
+                else if(line.at(i) == 'P') {
+                    addPlayer(new Player(col*30, row*30));
                 }
-
-                addGameObject(gameObject);
                 col++;
             }
 
@@ -82,12 +77,25 @@ void Map::convertFileToMap(string source) {
     file.close();
 }
 
+void Map::update(double diff) {
+    getPlayer()->update(diff);
+}
+
 void Map::draw() {
     for(unsigned i = 0; i < m_map.size(); i++) {
         GameObject *gameObject = m_map.at(i);
-        if(gameObject->getField() == WALL)
-            SDL_BlitSurface(m_wall, NULL, m_screen, gameObject->getRect());
-        else if(gameObject->getField() == DIAMOND)
-            SDL_BlitSurface(m_diamond, NULL, m_screen, gameObject->getRect());
+        switch(gameObject->getType()) {
+            case WALL:
+                SDL_BlitSurface(m_wall, NULL, m_screen, gameObject->getRect());
+                break;
+            case DIAMOND:
+                SDL_BlitSurface(m_diamond, NULL, m_screen, gameObject->getRect());
+                break;
+            /*case PLAYER:
+                Player *player = getPlayer();
+                SDL_BlitSurface(m_player, player->getAnimationRect(), m_screen, player->getRect());
+                break;*/
+        }
     }
+    SDL_BlitSurface(m_player, getPlayer()->getAnimationRect(), m_screen, getPlayer()->getRect());
 }

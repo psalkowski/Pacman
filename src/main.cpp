@@ -20,8 +20,8 @@ int main(int argc, char* argv[])
     rect.h = 33;
     rect.w = 33;
 
-    Game game;
-    game.run();
+    Game *game = Game::getInstance();
+    game->run();
 
     pacman = SDL_LoadBMP("images/pacman.bmp");
 
