@@ -76,10 +76,33 @@ void Map::convertFileToMap(string source) {
     }
     file.close();
 }
+void Map::destroyObject(vector<GameObject*> & vObject, GameObject *object) {
+    vector<GameObject*>::iterator iter = vObject.begin();
+    vector<GameObject*>::iterator endIter = vObject.end();
 
+    for(int i = 0; iter != endIter; iter++, i++) {
+        if(vObject.at(i) == object) {
+            vObject.erase(iter);
+            return;
+        }
+    }
+
+}
 void Map::update(double diff) {
-    if(!canMove(diff))
-        player->setMove(STAND);
+    vector<GameObject*> colisions = getColisions(player, diff);
+        
+    for(int i = 0; i < colisions.size(); i++) {
+        GameObject *object = colisions.at(i);
+
+        switch(object->getType()) {
+            case WALL:
+                player->setMove(STAND);
+                break;
+            case DIAMOND:
+                destroyObject(m_map, object);
+                break;
+        }
+    }
     
     player->update(diff);
 }
@@ -99,8 +122,9 @@ void Map::draw() {
     SDL_BlitSurface(m_player, getPlayer()->getAnimationRect(), m_screen, getPlayer()->getRect());
 }
 
-bool Map::canMove(double diff) {
+vector<GameObject*> Map::getColisions(Monster *monster, double diff) {
     SDL_Rect plrRect = *player->getRect();
+    vector<GameObject*> colisions;
 
     // wczytanie kolejnego ruchu gracza
     switch(player->getMove()) { 
@@ -113,35 +137,71 @@ bool Map::canMove(double diff) {
     // sprawdzanie kolizji
     for(unsigned i = 0; i < m_map.size(); i++) {
         GameObject *gameObject = m_map.at(i);
+
         if(gameObject->getType() == WALL) {
             switch(player->getMove()) {
                 case LEFT: 
                     if(plrRect.x - 10 == gameObject->getRect()->x + 15 && 
-                        (plrRect.y + 10 >= gameObject->getRect()->y - 15 &&
-                        plrRect.y - 10 <= gameObject->getRect()->y + 15))
-                        return false; 
+                        plrRect.y + 10 >= gameObject->getRect()->y - 15 &&
+                        plrRect.y - 10 <= gameObject->getRect()->y + 15)
+
+                        colisions.push_back(gameObject);
                     break;
                 case RIGHT: 
                     if(plrRect.x + 10 == gameObject->getRect()->x - 15 && 
-                        (plrRect.y + 10 >= gameObject->getRect()->y - 15 &&
-                        plrRect.y - 10 <= gameObject->getRect()->y + 15))
-                        return false; 
+                        plrRect.y + 10 >= gameObject->getRect()->y - 15 &&
+                        plrRect.y - 10 <= gameObject->getRect()->y + 15)
+
+                        colisions.push_back(gameObject);
                     break;
                 case UP: 
                     if(plrRect.y - 10 == gameObject->getRect()->y + 15 &&
-                        (plrRect.x + 10 >= gameObject->getRect()->x - 15 &&
-                        plrRect.x - 10 <= gameObject->getRect()->x + 15) )
-                        return false; 
+                        plrRect.x + 10 >= gameObject->getRect()->x - 15 &&
+                        plrRect.x - 10 <= gameObject->getRect()->x + 15)
+
+                        colisions.push_back(gameObject);
                     break;
                 case DOWN: 
                     if(plrRect.y + 10 == gameObject->getRect()->y - 15 &&
-                        (plrRect.x + 10 >= gameObject->getRect()->x - 15 &&
-                        plrRect.x - 10 <= gameObject->getRect()->x + 15)  )
-                        return false; 
+                        plrRect.x + 10 >= gameObject->getRect()->x - 15 &&
+                        plrRect.x - 10 <= gameObject->getRect()->x + 15)
+
+                        colisions.push_back(gameObject);
+                    break;
+            }
+        } else {
+            switch(player->getMove()) {
+                case LEFT: 
+                    if(plrRect.x - 10 == gameObject->getRect()->x + 5 && 
+                        plrRect.y + 10 >= gameObject->getRect()->y - 5 &&
+                        plrRect.y - 10 <= gameObject->getRect()->y + 5)
+
+                        colisions.push_back(gameObject);
+                    break;
+                case RIGHT: 
+                    if(plrRect.x + 10 == gameObject->getRect()->x - 5 && 
+                        plrRect.y + 10 >= gameObject->getRect()->y - 5 &&
+                        plrRect.y - 10 <= gameObject->getRect()->y + 5)
+
+                        colisions.push_back(gameObject);
+                    break;
+                case UP: 
+                    if(plrRect.y - 10 == gameObject->getRect()->y + 5 &&
+                        plrRect.x + 10 >= gameObject->getRect()->x - 5 &&
+                        plrRect.x - 10 <= gameObject->getRect()->x + 5)
+
+                        colisions.push_back(gameObject);
+                    break;
+                case DOWN: 
+                    if(plrRect.y + 10 == gameObject->getRect()->y - 5 &&
+                        plrRect.x + 10 >= gameObject->getRect()->x - 5 &&
+                        plrRect.x - 10 <= gameObject->getRect()->x + 5)
+
+                        colisions.push_back(gameObject);
                     break;
             }
         }
     }
 
-    return true;
+    return colisions;
 }

@@ -7,14 +7,7 @@ Player::Player(double x, double y) : Monster(PLAYER, x, y) {
 }
 
 void Player::update(double diff) {
-    double ds = getNextPosition(diff);
-
-    switch(getMove()) { 
-        case LEFT:  setVelocity(-2.0); goLeft(ds);   break;
-        case RIGHT: setVelocity(2.0); goRight(ds);  break;
-        case DOWN:  setVelocity(2.0); goDown(ds);   break;
-        case UP:    setVelocity(-2.0); goUp(ds);     break;
-    }
+    Monster::update(diff);
 
     m_time += diff;
 

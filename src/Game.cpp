@@ -56,8 +56,6 @@ void Game::run() {
         m_map->draw();
 
         updateScreen();
-
-        //SDL_Delay(100);
     }
 }
 

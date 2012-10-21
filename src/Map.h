@@ -28,9 +28,10 @@ private:
     vector<GameObject*> m_map;
     void initMap();
     void addGameObject(GameObject *gameObject);
-    bool canMove(double diff);
-    GameObject *getGameObject(int index);
+    void destroyObject(std::vector<GameObject*> & vObject, GameObject *object);
 
+    GameObject *getGameObject(int index);
+    vector<GameObject*> getColisions(Monster *monster, double diff);
 
     Player *player;
     SDL_Surface *m_wall;

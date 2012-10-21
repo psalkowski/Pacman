@@ -32,7 +32,7 @@ public:
     void goUp(double s);
     void goDown(double s);
 
-    virtual void update(double diff) {}
+    virtual void update(double diff);
 
 private:
     Move m_move;

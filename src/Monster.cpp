@@ -1,26 +1,16 @@
 #include "Monster.h"
 #include <iostream>
 
-void Monster::goRight(double s) {
-    if(s >= Config::WIN_W)
-        s = 0;
-    setRect(s, getRect()->y);
-}
 
-void Monster::goLeft(double s) {
-    if(s < 1)
-        s = Config::WIN_W;
+void Monster::update(double diff) {
+    double ds = getNextPosition(diff);
 
-    std::cout << s << std::endl;
-    setRect(s, getRect()->y);
-}
-
-void Monster::goUp(double s) {
-    setRect(getRect()->x, s);
-}
-
-void Monster::goDown(double s) {
-    setRect(getRect()->x, s);
+    switch(getMove()) { 
+        case LEFT:  setVelocity(-2.0); goLeft(ds);   break;
+        case RIGHT: setVelocity(2.0); goRight(ds);  break;
+        case DOWN:  setVelocity(2.0); goDown(ds);   break;
+        case UP:    setVelocity(-2.0); goUp(ds);     break;
+    }
 }
 
 double Monster::getNextPosition(double diff) {
@@ -36,4 +26,26 @@ double Monster::getNextPosition(double diff) {
     }
 
     return 0;
+}
+
+void Monster::goRight(double s) {
+    if(s >= Config::WIN_W)
+        s = 0;
+
+    setRect(s, getRect()->y);
+}
+
+void Monster::goLeft(double s) {
+    if(s < 1)
+        s = Config::WIN_W;
+
+    setRect(s, getRect()->y);
+}
+
+void Monster::goUp(double s) {
+    setRect(getRect()->x, s);
+}
+
+void Monster::goDown(double s) {
+    setRect(getRect()->x, s);
 }
