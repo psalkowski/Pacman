@@ -14,6 +14,9 @@ public:
 
     virtual void update(double diff);
     SDL_Rect *getAnimationRect() { return &m_animation; }
+
+    double getNextPosition(double diff);
+
     void updateAnimation(Move move);
     
     void goRight(double s);
@@ -23,7 +26,6 @@ public:
 
 private:
     void initAnimation();
-    double getNextPosition(double diff);
 
     static const int m_width = 33;
     static const int m_height = 33;

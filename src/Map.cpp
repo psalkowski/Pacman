@@ -44,7 +44,7 @@ void Map::initMap() {
     }
 
     int colorkey = SDL_MapRGB(m_screen->format, 255, 0, 255);
-    SDL_SetColorKey(m_diamond, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
+    SDL_SetColorKey(m_diamond, SDL_SRCCOLORKEY, colorkey);
     SDL_SetColorKey(m_player, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
 }
 
@@ -78,32 +78,9 @@ void Map::convertFileToMap(string source) {
 }
 
 void Map::update(double diff) {
-    Player *player = getPlayer();
-
-    for(unsigned i = 0; i < m_map.size(); i++) {
-        GameObject *gameObject = m_map.at(i);
-        if(gameObject->getType() == WALL) {
-            if(!canMove(player, gameObject)) {
-                switch(player->getMove()) {
-                    case LEFT:
-                        player->setRect(player->getRect()->x + 2, player->getRect()->y);
-                        break;
-                    case RIGHT:
-                        player->setRect(player->getRect()->x - 2, player->getRect()->y);
-                        break;
-                    case DOWN:
-                        player->setRect(player->getRect()->x, player->getRect()->y - 2);
-                        break;
-                    case UP:
-                        player->setRect(player->getRect()->x, player->getRect()->y + 2);
-                        break;
-                }
-                player->setMove(STAND);
-            }
-                
-            
-        }
-    } 
+    if(!canMove(diff))
+        player->setMove(STAND);
+    
     player->update(diff);
 }
 
@@ -117,42 +94,54 @@ void Map::draw() {
             case DIAMOND:
                 SDL_BlitSurface(m_diamond, NULL, m_screen, gameObject->getRect());
                 break;
-            /*case PLAYER:
-                Player *player = getPlayer();
-                SDL_BlitSurface(m_player, player->getAnimationRect(), m_screen, player->getRect());
-                break;*/
         }
     }
     SDL_BlitSurface(m_player, getPlayer()->getAnimationRect(), m_screen, getPlayer()->getRect());
 }
 
-bool Map::canMove(Player *player, GameObject *object) {
-    int leftA, leftB;
-    int rightA, rightB;
-    int topA, topB;
-    int bottomA, bottomB;
+bool Map::canMove(double diff) {
+    SDL_Rect plrRect = *player->getRect();
 
-    leftA = player->getRect()->x;
-    rightA = player->getRect()->x + player->getRect()->w;
-    topA = player->getRect()->y;
-    bottomA = player->getRect()->y + player->getRect()->h;
+    // wczytanie kolejnego ruchu gracza
+    switch(player->getMove()) { 
+        case LEFT:  plrRect.x = player->getNextPosition(diff);  break;
+        case RIGHT: plrRect.x = player->getNextPosition(diff);  break;
+        case DOWN:  plrRect.y = player->getNextPosition(diff);  break;
+        case UP:    plrRect.y = player->getNextPosition(diff);  break;
+    }
 
-    leftB = object->getRect()->x;
-    rightB = object->getRect()->x + object->getRect()->w;
-    topB = object->getRect()->y;
-    bottomB = object->getRect()->y + object->getRect()->h;
+    // sprawdzanie kolizji
+    for(unsigned i = 0; i < m_map.size(); i++) {
+        GameObject *gameObject = m_map.at(i);
+        if(gameObject->getType() == WALL) {
+            switch(player->getMove()) {
+                case LEFT: 
+                    if(plrRect.x - 10 == gameObject->getRect()->x + 15 && 
+                        (plrRect.y + 10 >= gameObject->getRect()->y - 15 &&
+                        plrRect.y - 10 <= gameObject->getRect()->y + 15))
+                        return false; 
+                    break;
+                case RIGHT: 
+                    if(plrRect.x + 10 == gameObject->getRect()->x - 15 && 
+                        (plrRect.y + 10 >= gameObject->getRect()->y - 15 &&
+                        plrRect.y - 10 <= gameObject->getRect()->y + 15))
+                        return false; 
+                    break;
+                case UP: 
+                    if(plrRect.y - 10 == gameObject->getRect()->y + 15 &&
+                        (plrRect.x + 10 >= gameObject->getRect()->x - 15 &&
+                        plrRect.x - 10 <= gameObject->getRect()->x + 15) )
+                        return false; 
+                    break;
+                case DOWN: 
+                    if(plrRect.y + 10 == gameObject->getRect()->y - 15 &&
+                        (plrRect.x + 10 >= gameObject->getRect()->x - 15 &&
+                        plrRect.x - 10 <= gameObject->getRect()->x + 15)  )
+                        return false; 
+                    break;
+            }
+        }
+    }
 
-    if(bottomA <= topB+5)
-        return true;
-    
-    if(topA >= bottomB-5)
-        return true;
-    
-    if(rightA <= leftB+5)
-        return true;
-    
-    if(leftA >= rightB-5)
-        return true;
-
-    return false;
+    return true;
 }

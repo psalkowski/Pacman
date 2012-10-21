@@ -30,7 +30,7 @@ private:
     vector<GameObject*> m_map;
     void initMap();
     void addGameObject(GameObject *gameObject);
-    bool canMove(Player *player, GameObject *object);
+    bool canMove(double diff);
     GameObject *getGameObject(int index);
 
 
