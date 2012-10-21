@@ -1,7 +1,6 @@
 #include "Player.h"
 
-Player::Player(double x, double y) : GameObject(x, y) { 
-    setType(PLAYER); 
+Player::Player(double x, double y) : Monster(PLAYER, x, y) { 
     setMove(STAND); 
     initAnimation();
     m_time = 0;
@@ -24,7 +23,6 @@ void Player::update(double diff) {
     else if(m_time < 0.4)
         updateAnimation(getMove());
     else m_time = 0;
-
 }
 
 void Player::initAnimation() {
@@ -35,35 +33,4 @@ void Player::initAnimation() {
 
 void Player::updateAnimation(Move move) {
     m_animation.x = move * m_width;
-}
-
-void Player::goRight(double diff) {
-    setRect(diff, getRect()->y);
-}
-
-void Player::goLeft(double diff) {
-    setRect(diff, getRect()->y);
-}
-
-void Player::goUp(double diff) {
-    setRect(getRect()->x, diff);
-}
-
-void Player::goDown(double diff) {
-    setRect(getRect()->x, diff);
-}
-
-double Player::getNextPosition(double diff) {
-    switch(getMove()) {
-        case LEFT:
-            return getRect()->x + getVelocity() * diff;
-        case RIGHT:
-            return getRect()->x + getVelocity() * diff + 1; // +1, bo SDL_Rect x jest liczba calkowita, czyli zaokrlaga
-        case UP:
-            return getRect()->y + getVelocity() * diff;
-        case DOWN:
-            return getRect()->y + getVelocity() * diff + 1;
-    }
-
-    return 0;
 }

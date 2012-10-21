@@ -61,9 +61,9 @@ void Map::convertFileToMap(string source) {
             getline(file, line);
             for(unsigned i = 0; i < line.length(); i++) {
                 if(line.at(i) == '0')
-                    addGameObject(new Wall(col*30, row*30));
+                    addGameObject(new GameObject(WALL, col*30, row*30));
                 else if(line.at(i) == '1')
-                    addGameObject(new Diamond(col*30, row*30));
+                    addGameObject(new GameObject(DIAMOND, col*30, row*30));
                 else if(line.at(i) == 'P') {
                     addPlayer(new Player(col*30, row*30));
                 }

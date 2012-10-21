@@ -5,24 +5,19 @@
 #include <SDL.h>
 #include <iostream>
 #include "GameObject.h"
+#include "Monster.h"
 
 using namespace std;
  
-class Player : public GameObject {
+class Player : public Monster {
 public:
     Player(double x, double y);
 
     virtual void update(double diff);
+
     SDL_Rect *getAnimationRect() { return &m_animation; }
 
-    double getNextPosition(double diff);
-
     void updateAnimation(Move move);
-    
-    void goRight(double s);
-    void goLeft(double s);
-    void goUp(double s);
-    void goDown(double s);
 
 private:
     void initAnimation();
