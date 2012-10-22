@@ -4,14 +4,16 @@
 
 #include <SDL.h>
 #include "Config.h"
+#include <iostream>
 
 enum Type {
     NONE,
     WALL,
     DIAMOND,
     EXTRA_DIAMOND,
-    MONSTER,
-    PLAYER
+    GHOST,
+    PLAYER,
+    CROSS
 };
 
 class GameObject {

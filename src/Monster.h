@@ -18,12 +18,10 @@ public:
     Monster(Type type, int x, int y) : GameObject(type, x, y) { };
 
     Move getMove() { return m_move; }
-    double getDiff() { return m_diff; }
     double getVelocity() { return m_velocity; }
 
     double getNextPosition(double diff);
 
-    void setDiff(int diff) { m_diff = diff; }
     void setMove(Move move) { m_move = move; }
     void setVelocity(double velocity) { m_velocity = velocity; }
 
@@ -36,7 +34,6 @@ public:
 
 private:
     Move m_move;
-    double m_diff;
     double m_velocity;
 };
 

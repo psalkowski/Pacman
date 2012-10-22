@@ -4,7 +4,6 @@
 
 #include <SDL.h>
 #include <iostream>
-#include "GameObject.h"
 #include "Monster.h"
 
 using namespace std;
