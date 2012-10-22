@@ -15,7 +15,7 @@ enum Move {
 
 class Monster : public GameObject {
 public:
-    Monster(Type type, int x, int y) : GameObject(type, x, y) { };
+    Monster(Type type, int x, int y) : GameObject(type, x, y) { setDefaultPos(x, y); };
 
     Move getMove() { return m_move; }
     double getVelocity() { return m_velocity; }
@@ -24,6 +24,7 @@ public:
 
     void setMove(Move move) { m_move = move; }
     void setVelocity(double velocity) { m_velocity = velocity; }
+    void resetPos() { setRect(m_def_pos.x, m_def_pos.y); }
 
     void goRight(double s);
     void goLeft(double s);
@@ -34,7 +35,10 @@ public:
 
 private:
     Move m_move;
+    SDL_Rect m_def_pos;
     double m_velocity;
+
+    void setDefaultPos(double x, double y) { m_def_pos.x = x; m_def_pos.y = y; }
 };
 
 #endif
