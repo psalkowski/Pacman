@@ -6,6 +6,8 @@
 #include "Map.h"
 #include "Player.h"
 #include <iostream>
+#include <sstream>
+#include <SDL_ttf.h>
 
 using namespace std;
 
@@ -28,6 +30,8 @@ private:
     SDL_Surface *m_screen;
     Map *m_map;
     Player *m_player;
+
+    SDL_Surface *m_text;
 
     double m_diff;
     bool is_done;

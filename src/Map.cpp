@@ -102,8 +102,10 @@ void Map::destroyObject(GameObject *object) {
 }
 void Map::update(double diff) {
     GameObject* diamond = getPlayerColisions(DIAMOND, diff);
-    if(diamond != NULL)
+    if(diamond != NULL) {
         destroyObject(diamond);
+        player->addPoints();
+    }
 
     for(int i = 0; i < m_vector_ghosts.size(); i++) {
         Ghost *ghost = m_vector_ghosts.at(i);

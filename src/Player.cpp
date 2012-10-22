@@ -6,6 +6,7 @@ Player::Player(double x, double y) : Monster(PLAYER, x, y) {
     initAnimation();
     m_time = 0;
     m_life = 3;
+    m_score = 0;
 }
 
 void Player::update(double diff) {

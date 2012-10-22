@@ -9,6 +9,7 @@ public:
     static const int MAP_ROW = 20;
     static const int WIN_W = 870;
     static const int WIN_H = 630;
+    static const int PAC_LIFE = 3;
 };
 
 #endif

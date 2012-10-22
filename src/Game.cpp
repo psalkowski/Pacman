@@ -1,5 +1,7 @@
 #include "Game.h"
 
+
+
 Game* Game::singleton = NULL;
 
 Game* Game::getInstance() {
@@ -30,6 +32,7 @@ void Game::initGraph() {
         return;
     }
     m_screen = SDL_SetVideoMode(Config::WIN_W, Config::WIN_H, 32, SDL_SWSURFACE | SDL_DOUBLEBUF);
+    TTF_Init();
 }
 
 void Game::run() {
@@ -42,20 +45,37 @@ void Game::run() {
 
     size_t last_ticks = SDL_GetTicks();
 
+    SDL_Color text_color = {100, 100, 100};
+
+    TTF_Font *font = NULL;
+    font = TTF_OpenFont("font/FreeSansBold.ttf", 24);
+
+    if(font == NULL) {
+        cout << "error " << endl;
+        cerr << TTF_GetError() << endl;
+        return; 
+    }
+
     while(!isDone()) {
-        processEvent();
+        if(m_player->getLife() > 0) {
+            processEvent();
 
-        // time update
-        size_t ticks = SDL_GetTicks();
-        m_diff = (ticks - last_ticks) / 1000.0;
-        last_ticks = ticks;
+            // time update
+            size_t ticks = SDL_GetTicks();
+            m_diff = (ticks - last_ticks) / 1000.0;
+            last_ticks = ticks;
 
-        clear();
+            clear();
 
-        m_map->update(m_diff);
-        m_map->draw();
+            m_map->update(m_diff);
+            m_map->draw();
 
-        updateScreen();
+            m_text = TTF_RenderText_Solid(font, m_player->getStatistic().c_str(), text_color);
+            cout << m_player->getStatistic() << endl;
+
+            SDL_BlitSurface(m_text, NULL, m_screen, NULL);
+            updateScreen();
+        }
     }
 }
 
