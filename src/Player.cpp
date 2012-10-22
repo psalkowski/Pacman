@@ -11,7 +11,6 @@ void Player::update(double diff) {
     Monster::update(diff);
 
     m_time += diff;
-
     if(m_time < 0.2)
         updateAnimation(STAND);
     else if(m_time < 0.4)

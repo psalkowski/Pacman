@@ -101,6 +101,7 @@ void Map::destroyObject(GameObject *object) {
     }
     
 }
+
 void Map::update(double diff) {
     GameObject* diamond = getPlayerColisions(DIAMOND, diff);
     if(diamond != NULL)
@@ -126,8 +127,12 @@ void Map::update(double diff) {
             m_vector_ghosts.at(i)->resetPos();
     }
 
-    if(getColisionsWithWall(player, diff))
+    if(getColisionsWithWall(player, diff)) {
+        cout << " STAND " << endl;
         player->setMove(STAND);
+    }
+
+    cout << diff << endl;
     player->update(diff);
 }
 
