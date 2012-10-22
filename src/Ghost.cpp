@@ -9,4 +9,5 @@ Move Ghost::getRandomMove() {
         default:
             break;
     }
+    return STAND;
 }

@@ -4,8 +4,7 @@
 
 void Monster::update(double diff) {
     double ds = getNextPosition(diff);
-    if(getType() == PLAYER)
-    std::cout << ds << std::endl; 
+
     switch(getMove()) { 
         case LEFT:  setVelocity(-2.0); goLeft(ds);   break;
         case RIGHT: setVelocity(2.0); goRight(ds);  break;

@@ -9,22 +9,16 @@
 
 using namespace std;
 
-enum Status {
-    MENU,
-    START,
-    REPEAT,
-    QUIT
-};
-
 class Game {
 public:
     ~Game();
     static Game *getInstance();
     void run();
     void processEvent();
-    void setStatus(Status status) { m_status = status; }
-    Status getStatus() { return m_status; }
-    
+    void setDone(bool done) { is_done = done; }
+
+    bool isDone() { return is_done; }
+
 private:
     Game();
     void initGraph();
@@ -36,7 +30,7 @@ private:
     Player *m_player;
 
     double m_diff;
-    Status m_status;
+    bool is_done;
     static Game* singleton;
 };
 
