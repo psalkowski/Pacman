@@ -1,4 +1,5 @@
 #include "Game.h"
+//#include <SDL_ttf.h>
 
 Game* Game::singleton = NULL;
 
@@ -9,10 +10,11 @@ Game* Game::getInstance() {
 
     return singleton;
 }
+
 Game::Game() {
     singleton = this;
     m_diff = 0;
-    is_done = false;
+    m_status = START;
 }
 
 Game::~Game() { 
@@ -34,15 +36,23 @@ void Game::initGraph() {
 
 void Game::run() {
     initGraph();
-    
+    //TTF_Init();
+
+    // Load a font
+//TTF_Font *font;
+    //font = TTF_OpenFont("font/FreeSansBold.ttf", 24);
+
+    // Write text to surface
+    //SDL_Surface *text;
+   // SDL_Color text_color = {0, 0, 0};
+   // text = TTF_RenderText_Solid(font, "A journey of a thousand miles begins with a single step.", text_color);
+
     m_map = new Map(m_screen);
     m_map->convertFileToMap("level/level-1.txt");
 
-    m_player = m_map->getPlayer();
-
     size_t last_ticks = SDL_GetTicks();
 
-    while(!isDone()) {
+    while(m_status == START) {
         processEvent();
 
         // time update
@@ -54,6 +64,8 @@ void Game::run() {
 
         m_map->update(m_diff);
         m_map->draw();
+
+       // SDL_BlitSurface(text, NULL, m_screen, NULL);
 
         updateScreen();
     }
@@ -71,7 +83,10 @@ void Game::processEvent() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
-            setDone(true);
+            setStatus(QUIT);
+            break;
+        } else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+            setStatus(QUIT);
             break;
         } else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT) {
             m_player->setMove(LEFT);

@@ -17,10 +17,7 @@ public:
     void lostLife();
     
     SDL_Rect *getAnimationRect() { return &m_animation; }
-    SDL_Rect getDefaultPos() { return m_def_pos; }
-    
-    void resetPos() { setRect(m_def_pos.x, m_def_pos.y); }
-    void setDefaultPos(double x, double y) { m_def_pos.x = x; m_def_pos.y = y; }
+
     void updateAnimation(Move move);
 
 private:
@@ -30,10 +27,10 @@ private:
     static const int m_height = 33;
 
     SDL_Rect m_animation;
-    SDL_Rect m_def_pos;
 
     double m_time;
     int m_life;
+    int m_point;
 };
 
 #endif

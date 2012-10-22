@@ -43,10 +43,10 @@ private:
     void destroyObject(GameObject *object);
 
     GameObject *getGameObject(int index);
+    GameObject* getPlayerColisions(Type type, double diff);
 
     bool Map::getColision(SDL_Rect *rectA, SDL_Rect *rectB, int radiusA, int radiusB);
     bool getColisionsWithWall(Monster *monster, double diff);
-    GameObject* getPlayerColisions(Type type, double diff);
 
     Player *player;
     SDL_Surface *m_wall;

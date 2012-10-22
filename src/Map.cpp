@@ -44,7 +44,7 @@ void Map::initMap() {
 void Map::convertFileToMap(string source) {
     fstream file;
     string line;
-    int row = 0, col = 0;
+    int row = 1, col = 0;
 
     file.open(source);
 
@@ -58,8 +58,10 @@ void Map::convertFileToMap(string source) {
                     addDiamond(new GameObject(DIAMOND, col*30, row*30));
                 else if(line.at(i) == 'P')
                     addPlayer(new Player(col*30, row*30));
-                else if(line.at(i) == 'G')
+                else if(line.at(i) == 'G') {
                     addGhost(new Ghost(col*30, row*30));
+                    addDiamond(new GameObject(DIAMOND, col*30, row*30));
+                }
                 else if(line.at(i) == 'C') {
                     addDiamond(new GameObject(DIAMOND, col*30, row*30));
                     addCross(new GameObject(CROSS, col*30, row*30));
@@ -99,6 +101,7 @@ void Map::destroyObject(GameObject *object) {
     }
     
 }
+
 void Map::update(double diff) {
     GameObject* diamond = getPlayerColisions(DIAMOND, diff);
     if(diamond != NULL)
@@ -120,10 +123,16 @@ void Map::update(double diff) {
     GameObject* ghost = getPlayerColisions(GHOST, diff);
     if(ghost != NULL) {
         player->lostLife();
+        for(int i = 0; i < m_vector_ghosts.size(); i++)
+            m_vector_ghosts.at(i)->resetPos();
     }
 
-    if(getColisionsWithWall(player, diff))
+    if(getColisionsWithWall(player, diff)) {
+        cout << " STAND " << endl;
         player->setMove(STAND);
+    }
+
+    cout << diff << endl;
     player->update(diff);
 }
 
@@ -149,10 +158,7 @@ GameObject* Map::getPlayerColisions(Type type, double diff) {
     SDL_Rect plrRect = *player->getRect();
     vector<GameObject*> vector_type;
 
-    int radius;
-    if(type == GHOST)
-        radius = 15;
-    else radius = 5;
+    int radius = 5;
 
     switch(player->getMove()) { 
         case LEFT:  plrRect.x = player->getNextPosition(diff);  break;
