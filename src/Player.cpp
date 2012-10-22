@@ -1,9 +1,11 @@
 #include "Player.h"
 
-Player::Player(double x, double y) : Monster(PLAYER, x, y) { 
+Player::Player(double x, double y) : Monster(PLAYER, x, y) {
+    setDefaultPos(x, y);
     setMove(STAND); 
     initAnimation();
     m_time = 0;
+    m_life = 3;
 }
 
 void Player::update(double diff) {
@@ -26,4 +28,10 @@ void Player::initAnimation() {
 
 void Player::updateAnimation(Move move) {
     m_animation.x = move * m_width;
+}
+
+void Player::lostLife() {
+    m_life--; 
+    resetPos();
+    setMove(STAND);
 }
