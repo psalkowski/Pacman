@@ -44,7 +44,7 @@ void Map::initMap() {
 void Map::convertFileToMap(string source) {
     fstream file;
     string line;
-    int row = 0, col = 0;
+    int row = 1, col = 0;
 
     file.open(source);
 
@@ -58,8 +58,10 @@ void Map::convertFileToMap(string source) {
                     addDiamond(new GameObject(DIAMOND, col*30, row*30));
                 else if(line.at(i) == 'P')
                     addPlayer(new Player(col*30, row*30));
-                else if(line.at(i) == 'G')
+                else if(line.at(i) == 'G') {
                     addGhost(new Ghost(col*30, row*30));
+                    addDiamond(new GameObject(DIAMOND, col*30, row*30));
+                }
                 else if(line.at(i) == 'C') {
                     addDiamond(new GameObject(DIAMOND, col*30, row*30));
                     addCross(new GameObject(CROSS, col*30, row*30));
@@ -118,8 +120,11 @@ void Map::update(double diff) {
     }
     
     GameObject* ghost = getPlayerColisions(GHOST, diff);
-    if(ghost != NULL)
-        destroyObject(ghost);
+    if(ghost != NULL) {
+        player->lostLife();
+        for(int i = 0; i < m_vector_ghosts.size(); i++)
+            m_vector_ghosts.at(i)->resetPos();
+    }
 
     if(getColisionsWithWall(player, diff))
         player->setMove(STAND);
@@ -148,10 +153,7 @@ GameObject* Map::getPlayerColisions(Type type, double diff) {
     SDL_Rect plrRect = *player->getRect();
     vector<GameObject*> vector_type;
 
-    int radius;
-    if(type == GHOST)
-        radius = 10;
-    else radius = 5;
+    int radius = 5;
 
     switch(player->getMove()) { 
         case LEFT:  plrRect.x = player->getNextPosition(diff);  break;
@@ -172,30 +174,12 @@ GameObject* Map::getPlayerColisions(Type type, double diff) {
         GameObject *gameObject = vector_type.at(i);
 
 
-        if(plrRect.x - 15 == gameObject->getRect()->x + radius && 
-            plrRect.y + 15 >= gameObject->getRect()->y - radius &&
-            plrRect.y - 15 <= gameObject->getRect()->y + radius)
+        if(plrRect.x - 17 <= gameObject->getRect()->x + radius && 
+            plrRect.x + 17 >= gameObject->getRect()->x - radius &&
+            plrRect.y + 17 >= gameObject->getRect()->y - radius &&
+            plrRect.y - 17 <= gameObject->getRect()->y + radius)
 
             return gameObject;
-
-        if(plrRect.x + 15 == gameObject->getRect()->x - radius && 
-            plrRect.y + 15 >= gameObject->getRect()->y - radius &&
-            plrRect.y - 15 <= gameObject->getRect()->y + radius)
-
-            return gameObject;
-
-        if(plrRect.y - 15== gameObject->getRect()->y + radius &&
-            plrRect.x + 15 >= gameObject->getRect()->x - radius &&
-            plrRect.x - 15 <= gameObject->getRect()->x + radius)
-
-            return gameObject;
-
-        if(plrRect.y + 15 == gameObject->getRect()->y - radius &&
-            plrRect.x + 15 >= gameObject->getRect()->x - radius &&
-            plrRect.x - 15 <= gameObject->getRect()->x + radius)
-
-            return gameObject;
-
     }
 
     return NULL;
@@ -223,36 +207,12 @@ bool Map::getColisionsWithWall(Monster *monster, double diff) {
     for(unsigned i = 0; i < m_vector_wall.size(); i++) {
         GameObject *gameObject = m_vector_wall.at(i);
 
-        switch(monster->getMove()) {
-            case LEFT: 
-                if(monsterRect.x - radius == gameObject->getRect()->x + objRadius && 
-                    monsterRect.y + radius >= gameObject->getRect()->y - objRadius &&
-                    monsterRect.y - radius <= gameObject->getRect()->y + objRadius)
+        if(monsterRect.x - radius <= gameObject->getRect()->x + objRadius && 
+            monsterRect.x + radius >= gameObject->getRect()->x - objRadius &&
+            monsterRect.y + radius >= gameObject->getRect()->y - objRadius &&
+            monsterRect.y - radius <= gameObject->getRect()->y + objRadius)
 
-                    return true;
-                break;
-            case RIGHT: 
-                if(monsterRect.x + radius == gameObject->getRect()->x - objRadius && 
-                    monsterRect.y + radius >= gameObject->getRect()->y - objRadius &&
-                    monsterRect.y - radius <= gameObject->getRect()->y + objRadius)
-
-                    return true;
-                break;
-            case UP: 
-                if(monsterRect.y - radius == gameObject->getRect()->y + objRadius &&
-                    monsterRect.x + radius >= gameObject->getRect()->x - objRadius &&
-                    monsterRect.x - radius <= gameObject->getRect()->x + objRadius)
-
-                    return true;
-                break;
-            case DOWN: 
-                if(monsterRect.y + radius == gameObject->getRect()->y - objRadius &&
-                    monsterRect.x + radius >= gameObject->getRect()->x - objRadius &&
-                    monsterRect.x - radius <= gameObject->getRect()->x + objRadius)
-
-                    return true;
-                break;
-        }
+            return true;
     }
 
     return false;
@@ -261,37 +221,9 @@ bool Map::getColisionsWithWall(Monster *monster, double diff) {
 bool Map::isCross(Ghost *ghost) {
     for(unsigned i = 0; i < m_vector_cross.size(); i++) {
         GameObject *gameObject = m_vector_cross.at(i);
-
-        switch(ghost->getMove()) {
-            case LEFT: 
-                if(ghost->getRect()->x == gameObject->getRect()->x && 
-                    ghost->getRect()->y + 14 >= gameObject->getRect()->y - 15 &&
-                    ghost->getRect()->y - 14 <= gameObject->getRect()->y + 15)
-
-                    return true;
-                break;
-            case RIGHT: 
-                if(ghost->getRect()->x == gameObject->getRect()->x && 
-                    ghost->getRect()->y + 14 >= gameObject->getRect()->y - 15 &&
-                    ghost->getRect()->y - 14 <= gameObject->getRect()->y + 15)
-
-                    return true;
-                break;
-            case UP: 
-                if(ghost->getRect()->y == gameObject->getRect()->y &&
-                    ghost->getRect()->x + 14 >= gameObject->getRect()->x - 15 &&
-                    ghost->getRect()->x - 14 <= gameObject->getRect()->x + 15)
-
-                    return true;
-                break;
-            case DOWN: 
-                if(ghost->getRect()->y == gameObject->getRect()->y &&
-                    ghost->getRect()->x + 14>= gameObject->getRect()->x - 15 &&
-                    ghost->getRect()->x - 14 <= gameObject->getRect()->x + 15)
-
-                    return true;
-                break;
-        }
+        if(ghost->getRect()->x  == gameObject->getRect()->x  &&
+            ghost->getRect()->y == gameObject->getRect()->y)
+            return true;
     }
 
     return false;

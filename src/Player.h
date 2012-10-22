@@ -13,7 +13,9 @@ public:
     Player(double x, double y);
 
     virtual void update(double diff);
-
+    int getLife() { return m_life; }
+    void lostLife();
+    
     SDL_Rect *getAnimationRect() { return &m_animation; }
 
     void updateAnimation(Move move);
@@ -25,8 +27,9 @@ private:
     static const int m_height = 33;
 
     SDL_Rect m_animation;
-    double m_time;
 
+    double m_time;
+    int m_life;
 };
 
 #endif
