@@ -2,19 +2,19 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "Map.h"
 #include "Player.h"
 #include <iostream>
 #include <sstream>
-#include <SDL_ttf.h>
+#include <SDL/SDL_ttf.h>
 
 using namespace std;
 
 class Game {
 public:
+    Game();
     ~Game();
-    static Game *getInstance();
     void run();
     void processEvent();
     void setDone(bool done) { is_done = done; }
@@ -22,7 +22,7 @@ public:
     bool isDone() { return is_done; }
 
 private:
-    Game();
+
     void initGraph();
     void clear();
     void updateScreen();
@@ -35,7 +35,6 @@ private:
 
     double m_diff;
     bool is_done;
-    static Game* singleton;
 };
 
 #endif

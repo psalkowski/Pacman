@@ -2,8 +2,8 @@
 
 int main(int argc, char* argv[]) {
 
-    Game *game = Game::getInstance();
-    game->run();
+    Game game;
+    game.run();
 
     return 0;
 }

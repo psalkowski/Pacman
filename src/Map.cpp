@@ -25,13 +25,15 @@ void Map::setScreenSurface(SDL_Surface *screen) {
 }
 
 void Map::initMap() {
+    player = NULL;
+
     m_diamond = SDL_LoadBMP("images/diamond.bmp");
     m_wall = SDL_LoadBMP("images/block.bmp");
     m_player = SDL_LoadBMP("images/pacman.bmp");
     m_ghost = SDL_LoadBMP("images/ghost.bmp");
 
     if(m_player == NULL || m_diamond == NULL || m_wall == NULL || m_ghost == NULL) {
-        cout << "Z³a œcie¿ka zdjêæ. Poprawna to /images/ " << endl;
+        cout << "Zï¿½a ï¿½cieï¿½ka zdjï¿½ï¿½. Poprawna to /images/ " << endl;
     }
 
     int colorkey = SDL_MapRGB(m_screen->format, 255, 0, 255);
@@ -40,13 +42,13 @@ void Map::initMap() {
     SDL_SetColorKey(m_ghost, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
 }
 
-// funkcja nie jest bezpieczna, nale¿y j¹ przerobiæ
+// funkcja nie jest bezpieczna, naleï¿½y jï¿½ przerobiï¿½
 void Map::convertFileToMap(string source) {
     fstream file;
     string line;
     int row = 1, col = 0;
 
-    file.open(source);
+    file.open(source.c_str());
 
     if(file.is_open()) {
         while(!file.eof()) {

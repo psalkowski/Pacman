@@ -1,25 +1,19 @@
 #include "Game.h"
 
-
-
-Game* Game::singleton = NULL;
-
-Game* Game::getInstance() {
-    if(singleton == NULL) {
-        Game();
-    }
-
-    return singleton;
-}
 Game::Game() {
-    singleton = this;
+
     m_diff = 0;
     is_done = false;
+
+    m_screen = NULL;
+    m_map = NULL;
+    m_player = NULL;
+    m_text = NULL;
 }
 
 Game::~Game() { 
-    //delete m_map;
-    //delete m_player;
+    delete m_map;
+    delete m_player;
 
     SDL_FreeSurface(m_screen);
     SDL_Quit();
@@ -57,9 +51,10 @@ void Game::run() {
     }
 
     while(!isDone()) {
-        if(m_player->getLife() > 0) {
-            processEvent();
+        
+        processEvent();
 
+        if(m_player->getLife() > 0) {
             // time update
             size_t ticks = SDL_GetTicks();
             m_diff = (ticks - last_ticks) / 1000.0;

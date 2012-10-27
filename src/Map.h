@@ -44,7 +44,7 @@ private:
 
     GameObject *getGameObject(int index);
 
-    bool Map::getColision(SDL_Rect *rectA, SDL_Rect *rectB, int radiusA, int radiusB);
+    bool getColision(SDL_Rect *rectA, SDL_Rect *rectB, int radiusA, int radiusB);
     bool getColisionsWithWall(Monster *monster, double diff);
     GameObject* getPlayerColisions(Type type, double diff);
 

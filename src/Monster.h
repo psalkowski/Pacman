@@ -2,7 +2,7 @@
 #ifndef __MONSTER_H__
 #define __MONSTER_H__
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "GameObject.h"
 
 enum Move {

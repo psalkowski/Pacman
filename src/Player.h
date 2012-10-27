@@ -2,7 +2,7 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <iostream>
 #include <sstream>
 #include "Monster.h"

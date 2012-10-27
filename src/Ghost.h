@@ -2,7 +2,7 @@
 #ifndef __GHOST_H__
 #define __GHOST_H__
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <cstdlib> 
 #include "Monster.h"
 

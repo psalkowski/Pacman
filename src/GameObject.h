@@ -2,7 +2,7 @@
 #ifndef __GAMEOBJECT_H__
 #define __GAMEOBJECT_H__
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "Config.h"
 #include <iostream>
 
